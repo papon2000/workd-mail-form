@@ -27,7 +27,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font); font-size: 16px; background: #f0f4f8; color: #222; }
+  body { font-family: var(--font); font-size: 18px; background: #f0f4f8; color: #222; }
 
   .page { max-width: 860px; margin: 32px auto; background: #fff; border-radius: 12px;
     box-shadow: 0 4px 24px rgba(0,0,0,.12); overflow: hidden; }
@@ -39,7 +39,7 @@
 
   /* Progress */
   .progress-bar { display: flex; background: var(--blue-pale); border-bottom: 2px solid var(--border); }
-  .step { flex: 1; text-align: center; padding: 12px 4px; font-size: 13px; color: #888;
+  .step { flex: 1; text-align: center; padding: 12px 4px; font-size: 15px; color: #888;
     border-right: 1px solid var(--border); cursor: pointer; transition: .2s; }
   .step:last-child { border-right: none; }
   .step.active { background: var(--blue-mid); color: #fff; font-weight: 700; }
@@ -55,11 +55,11 @@
   .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form-grid.single { grid-template-columns: 1fr; }
   .form-col { display: flex; flex-direction: column; gap: 4px; }
-  label { font-size: 14px; color: var(--gray); font-weight: 600; }
+  label { font-size: 16px; color: var(--gray); font-weight: 600; }
   label .req { color: var(--red); margin-left: 2px; }
   input[type=text], input[type=email], input[type=tel], select, textarea {
     border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 12px;
-    font-family: var(--font); font-size: 15px; width: 100%;
+    font-family: var(--font); font-size: 17px; width: 100%;
     transition: border .2s, box-shadow .2s; background: #fafcff;
   }
   input:focus, select:focus, textarea:focus {
@@ -81,7 +81,7 @@
   .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .service-card { border: 2px solid var(--border); border-radius: 10px; overflow: hidden; }
   .service-card-header { background: var(--blue-mid); padding: 10px 16px;
-    color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+    color: #fff; font-weight: 700; font-size: 17px; display: flex; align-items: center; gap: 8px; }
   .service-card-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
   .service-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px;
     border: 1.5px solid var(--border); border-radius: 7px; cursor: pointer;
@@ -89,15 +89,15 @@
   .service-item:hover { border-color: var(--blue-mid); background: var(--blue-pale); }
   .service-item.selected { border-color: var(--blue-mid); background: var(--blue-pale); }
   .service-item input[type=checkbox] { accent-color: var(--blue-mid); width: 17px; height: 17px; flex-shrink: 0; margin-top: 2px; }
-  .service-item label { cursor: pointer; font-size: 14px; }
+  .service-item label { cursor: pointer; font-size: 16px; }
   .service-sub { margin-top: 6px; display: none; }
   .service-sub.show { display: block; }
-  .sub-label { font-size: 13px; color: var(--gray); margin-bottom: 4px; font-weight: 600; }
+  .sub-label { font-size: 15px; color: var(--gray); margin-bottom: 4px; font-weight: 600; }
   .email-input-row { display: flex; align-items: center; gap: 0; }
   .email-input-row input { border-radius: 6px 0 0 6px; border-right: none; }
   .email-suffix { background: var(--blue-dark); color: #fff; padding: 9px 12px;
-    border-radius: 0 6px 6px 0; font-size: 14px; white-space: nowrap; font-weight: 600; }
-  .warn-text { font-size: 12px; color: var(--red); margin-top: 4px; }
+    border-radius: 0 6px 6px 0; font-size: 16px; white-space: nowrap; font-weight: 600; }
+  .warn-text { font-size: 14px; color: var(--red); margin-top: 4px; }
 
   /* Signature */
   .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -108,7 +108,7 @@
 
   /* Consent */
   .consent-box { background: var(--blue-pale); border: 1.5px solid var(--border);
-    border-radius: 8px; padding: 20px; font-size: 14px; line-height: 1.8; max-height: 220px;
+    border-radius: 8px; padding: 20px; font-size: 16px; line-height: 1.8; max-height: 220px;
     overflow-y: auto; color: #333; }
   .consent-check { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; cursor: pointer; }
   .consent-check input { accent-color: var(--blue-mid); width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
@@ -148,7 +148,7 @@
 <div class="page">
   <div class="form-header">
     <h1>แบบฟอร์มขอใช้/ยกเลิกใช้ระบบ workD Mail</h1>
-    <p>กรมพัฒนาฝีมือแรงงาน &nbsp;|&nbsp; @dsd.mail.go.th</p>
+    <p>กรมพัฒนาฝีมือแรงงาน &nbsp;|&nbsp; @dsd.go.th</p>
   </div>
 
   <div class="progress-bar">
@@ -208,7 +208,7 @@
     <div class="form-grid single">
       <div class="form-col">
         <label>E-mail สำหรับแจ้งผลการดำเนินการ <span class="req">*</span></label>
-        <input type="email" id="notifyEmail" placeholder="อีเมลที่ติดต่อได้ (ไม่ใช่ @dsd.mail.go.th)">
+        <input type="email" id="notifyEmail" placeholder="อีเมลที่ติดต่อได้ (ไม่ใช่ @dsd.go.th)">
       </div>
     </div>
   </div>
@@ -256,7 +256,7 @@
             <div class="sub-label">ชื่อ e-mail ที่ต้องการ</div>
             <div class="email-input-row">
               <input type="text" id="val_newP" placeholder="firstname.xx">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
           </div>
 
@@ -267,7 +267,7 @@
             <div class="sub-label">ชื่อ e-mail เดิม</div>
             <div class="email-input-row">
               <input type="text" id="val_keepP" placeholder="firstname.xx">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
           </div>
 
@@ -278,7 +278,7 @@
             <div class="sub-label">ชื่อ e-mail ที่ต้องการยกเลิก</div>
             <div class="email-input-row">
               <input type="text" id="val_cancelP" placeholder="firstname.xx">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
             <p class="warn-text">⚠ ระบบจะยกเลิกภายใน 7 วัน — กรุณาโอนข้อมูลด้วยตนเอง</p>
           </div>
@@ -290,7 +290,7 @@
             <div class="sub-label">ชื่อ e-mail ที่ต้องการ Reset</div>
             <div class="email-input-row">
               <input type="text" id="val_resetP" placeholder="firstname.xx">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
             <div class="sub-label" style="margin-top:8px">เหตุผล</div>
             <textarea id="reason_resetP" rows="2" placeholder="ระบุเหตุผล..." style="width:100%"></textarea>
@@ -311,7 +311,7 @@
             <div class="sub-label">ชื่อ e-mail หน่วยงานที่ต้องการ</div>
             <div class="email-input-row">
               <input type="text" id="val_newU" placeholder="unit.division">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
           </div>
 
@@ -321,7 +321,7 @@
           <div class="service-sub" id="sub_keepU">
             <div class="email-input-row">
               <input type="text" id="val_keepU" placeholder="unit.division">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
           </div>
 
@@ -331,7 +331,7 @@
           <div class="service-sub" id="sub_cancelU">
             <div class="email-input-row">
               <input type="text" id="val_cancelU" placeholder="unit.division">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
             <p class="warn-text">⚠ ระบบจะยกเลิกภายใน 7 วัน — กรุณาโอนข้อมูลด้วยตนเอง</p>
           </div>
@@ -343,7 +343,7 @@
             <div class="sub-label">ชื่อ e-mail หน่วยงาน</div>
             <div class="email-input-row">
               <input type="text" id="val_changeU" placeholder="unit.division">
-              <span class="email-suffix">@dsd.mail.go.th</span>
+              <span class="email-suffix">@dsd.go.th</span>
             </div>
             <div class="sub-label" style="margin-top:8px">ชื่อผู้รับผิดชอบใหม่</div>
             <input type="text" id="newOwner" placeholder="ชื่อ-นามสกุล ผู้รับผิดชอบคนใหม่">
@@ -474,8 +474,8 @@ function buildSummary() {
   const v = id => (document.getElementById(id)||{value:''}).value || '-';
   const type = document.querySelector('input[name="emptype"]:checked');
   const services = [];
-  ['newP','keepP','cancelP','resetP'].forEach(id => { if(document.getElementById(id)?.checked) services.push(document.getElementById(id).nextElementSibling.textContent + ' (' + v('val_'+id) + '@dsd.mail.go.th)'); });
-  ['newU','keepU','cancelU','changeU'].forEach(id => { if(document.getElementById(id)?.checked) services.push(document.getElementById(id).nextElementSibling.textContent + ' (' + v('val_'+id) + '@dsd.mail.go.th)'); });
+  ['newP','keepP','cancelP','resetP'].forEach(id => { if(document.getElementById(id)?.checked) services.push(document.getElementById(id).nextElementSibling.textContent + ' (' + v('val_'+id) + '@dsd.go.th)'); });
+  ['newU','keepU','cancelU','changeU'].forEach(id => { if(document.getElementById(id)?.checked) services.push(document.getElementById(id).nextElementSibling.textContent + ' (' + v('val_'+id) + '@dsd.go.th)'); });
   document.getElementById('summaryBox').innerHTML = `
     <b>ชื่อ-สกุล :</b> ${v('nameTH')} / ${v('nameEN')}<br>
     <b>เลขบัตร :</b> ${v('idcard')} &nbsp;|&nbsp; <b>ประเภท :</b> ${type ? type.value : '-'}<br>
@@ -517,7 +517,7 @@ function collectData() {
     if (cb && cb.checked) {
       services.push({
         type: cb.nextElementSibling.textContent.trim(),
-        email: v('val_'+id) + '@dsd.mail.go.th',
+        email: v('val_'+id) + '@dsd.go.th',
         reason: v('reason_'+id) || '',
       });
     }
@@ -527,7 +527,7 @@ function collectData() {
     if (cb && cb.checked) {
       services.push({
         type: cb.nextElementSibling.textContent.trim(),
-        email: v('val_'+id) + '@dsd.mail.go.th',
+        email: v('val_'+id) + '@dsd.go.th',
         newOwner: v('newOwner') || '',
       });
     }
