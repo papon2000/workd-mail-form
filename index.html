@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<title>แบบฟอร์มขอใช้บริการ workD Mail — กรมพัฒนาฝีมือแรงงาน</title>
+<style>
+  :root {
+    --blue-dark: #1F4E79;
+    --blue-mid: #2E75B6;
+    --blue-light: #D6E4F0;
+    --blue-pale: #EBF3FB;
+    --red: #C00000;
+    --gray: #555;
+    --border: #BDD7EE;
+    --font: 'Sarabun', 'TH Sarabun New', sans-serif;
+  }
+  /* LIFF */
+  .liff-banner{display:none;background:var(--blue-dark);padding:10px 16px;padding-top:max(10px,env(safe-area-inset-top));align-items:center;gap:10px}
+  .liff-avatar{width:36px;height:36px;border-radius:50%;border:2px solid #BDD7EE;object-fit:cover}
+  .liff-username{color:#BDD7EE;font-size:13px}
+  .liff-username strong{color:#fff;display:block;font-size:15px}
+  #liffLoading{position:fixed;inset:0;background:var(--blue-dark);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff;font-family:var(--font);gap:12px}
+  #liffLoading .spinner{width:40px;height:40px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: 16px; background: #f0f4f8; color: #222; }
+
+  .page { max-width: 860px; margin: 32px auto; background: #fff; border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.12); overflow: hidden; }
+
+  /* Header */
+  .form-header { background: var(--blue-dark); padding: 28px 36px; text-align: center; }
+  .form-header h1 { color: #fff; font-size: 22px; font-weight: 700; }
+  .form-header p { color: #BDD7EE; font-size: 15px; margin-top: 6px; }
+
+  /* Progress */
+  .progress-bar { display: flex; background: var(--blue-pale); border-bottom: 2px solid var(--border); }
+  .step { flex: 1; text-align: center; padding: 12px 4px; font-size: 13px; color: #888;
+    border-right: 1px solid var(--border); cursor: pointer; transition: .2s; }
+  .step:last-child { border-right: none; }
+  .step.active { background: var(--blue-mid); color: #fff; font-weight: 700; }
+  .step.done { background: #E8F4FD; color: var(--blue-mid); }
+
+  /* Sections */
+  .section { display: none; padding: 32px 36px; }
+  .section.active { display: block; }
+
+  .section-title { font-size: 17px; font-weight: 700; color: var(--blue-dark);
+    border-left: 5px solid var(--blue-mid); padding-left: 12px; margin-bottom: 24px; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid.single { grid-template-columns: 1fr; }
+  .form-col { display: flex; flex-direction: column; gap: 4px; }
+  label { font-size: 14px; color: var(--gray); font-weight: 600; }
+  label .req { color: var(--red); margin-left: 2px; }
+  input[type=text], input[type=email], input[type=tel], select, textarea {
+    border: 1.5px solid var(--border); border-radius: 6px; padding: 9px 12px;
+    font-family: var(--font); font-size: 15px; width: 100%;
+    transition: border .2s, box-shadow .2s; background: #fafcff;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--blue-mid);
+    box-shadow: 0 0 0 3px rgba(46,117,182,.15);
+  }
+  input.error { border-color: var(--red); }
+
+  /* Radio / checkbox group */
+  .radio-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+  .radio-opt { display: flex; align-items: center; gap: 6px; cursor: pointer;
+    background: var(--blue-pale); border: 1.5px solid var(--border);
+    border-radius: 6px; padding: 7px 14px; transition: .2s; }
+  .radio-opt:hover { border-color: var(--blue-mid); background: #D6E4F0; }
+  .radio-opt input { accent-color: var(--blue-mid); width: 16px; height: 16px; }
+  .radio-opt.selected { border-color: var(--blue-mid); background: #D6E4F0; font-weight: 600; }
+
+  /* Service type cards */
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .service-card { border: 2px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .service-card-header { background: var(--blue-mid); padding: 10px 16px;
+    color: #fff; font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .service-card-body { padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+  .service-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 10px;
+    border: 1.5px solid var(--border); border-radius: 7px; cursor: pointer;
+    transition: .2s; background: #fafcff; }
+  .service-item:hover { border-color: var(--blue-mid); background: var(--blue-pale); }
+  .service-item.selected { border-color: var(--blue-mid); background: var(--blue-pale); }
+  .service-item input[type=checkbox] { accent-color: var(--blue-mid); width: 17px; height: 17px; flex-shrink: 0; margin-top: 2px; }
+  .service-item label { cursor: pointer; font-size: 14px; }
+  .service-sub { margin-top: 6px; display: none; }
+  .service-sub.show { display: block; }
+  .sub-label { font-size: 13px; color: var(--gray); margin-bottom: 4px; font-weight: 600; }
+  .email-input-row { display: flex; align-items: center; gap: 0; }
+  .email-input-row input { border-radius: 6px 0 0 6px; border-right: none; }
+  .email-suffix { background: var(--blue-dark); color: #fff; padding: 9px 12px;
+    border-radius: 0 6px 6px 0; font-size: 14px; white-space: nowrap; font-weight: 600; }
+  .warn-text { font-size: 12px; color: var(--red); margin-top: 4px; }
+
+  /* Signature */
+  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .sig-box { border: 1.5px dashed var(--border); border-radius: 8px; padding: 20px;
+    text-align: center; }
+  .sig-box .sig-label { font-size: 13px; color: var(--gray); margin-bottom: 4px; font-weight: 600; }
+  .sig-line { border-bottom: 1.5px solid #ccc; margin: 30px 20px 6px; }
+
+  /* Consent */
+  .consent-box { background: var(--blue-pale); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 20px; font-size: 14px; line-height: 1.8; max-height: 220px;
+    overflow-y: auto; color: #333; }
+  .consent-check { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; cursor: pointer; }
+  .consent-check input { accent-color: var(--blue-mid); width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; }
+
+  /* Nav buttons */
+  .nav-row { display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 36px; border-top: 1px solid var(--border); background: var(--blue-pale); }
+  .btn { padding: 10px 28px; border-radius: 7px; font-family: var(--font);
+    font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: .2s; }
+  .btn-back { background: #fff; color: var(--blue-dark); border: 1.5px solid var(--border); }
+  .btn-back:hover { background: var(--blue-pale); }
+  .btn-next { background: var(--blue-mid); color: #fff; }
+  .btn-next:hover { background: var(--blue-dark); }
+  .btn-submit { background: #107C10; color: #fff; }
+  .btn-submit:hover { background: #0A5E0A; }
+
+  /* Success */
+  .success-page { display: none; text-align: center; padding: 48px 36px; }
+  .success-icon { font-size: 64px; margin-bottom: 16px; }
+  .success-page h2 { color: #107C10; font-size: 22px; margin-bottom: 8px; }
+  .success-page p { color: var(--gray); font-size: 15px; }
+
+  @media (max-width: 640px) {
+    .form-grid, .service-grid, .sig-grid { grid-template-columns: 1fr; }
+    .page { margin: 0; border-radius: 0; }
+    .section { padding: 20px; }
+    .nav-row { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="liffLoading"><div class="spinner"></div><p style="font-size:15px">กำลังโหลด...</p></div>
+
+<div id="liffBanner" class="liff-banner"><img id="liffAvatar" class="liff-avatar" src="" alt=""><div class="liff-username"><strong id="liffName">—</strong>เข้าสู่ระบบด้วย LINE ✓</div></div>
+
+<div class="page">
+  <div class="form-header">
+    <h1>แบบฟอร์มขอใช้/ยกเลิกใช้ระบบ workD Mail</h1>
+    <p>กรมพัฒนาฝีมือแรงงาน &nbsp;|&nbsp; @dsd.mail.go.th</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="step active" data-step="1">๑. ข้อมูลผู้ขอ</div>
+    <div class="step" data-step="2">๒. ข้อมูลหน่วยงาน</div>
+    <div class="step" data-step="3">๓. ประเภทบริการ</div>
+    <div class="step" data-step="4">๔. ข้อตกลง</div>
+    <div class="step" data-step="5">๕. สรุป</div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="section active" id="step1">
+    <div class="section-title">ส่วนที่ ๑ — ข้อมูลผู้ขอใช้บริการ</div>
+    <div class="form-grid" style="margin-bottom:16px">
+      <div class="form-col">
+        <label>ชื่อ-นามสกุล (ภาษาไทย) <span class="req">*</span></label>
+        <input type="text" id="nameTH" placeholder="เช่น นายสมชาย ใจดี">
+      </div>
+      <div class="form-col">
+        <label>Name-Surname (English) <span class="req">*</span></label>
+        <input type="text" id="nameEN" placeholder="e.g. Mr. Somchai Jaidee">
+      </div>
+    </div>
+    <div class="form-grid" style="margin-bottom:16px">
+      <div class="form-col">
+        <label>เลขบัตรประชาชน <span class="req">*</span></label>
+        <input type="text" id="idcard" placeholder="1 2345 67890 12 3" maxlength="13">
+      </div>
+      <div class="form-col">
+        <label>ประเภทบุคลากร <span class="req">*</span></label>
+        <div class="radio-group" id="typeGroup">
+          <div class="radio-opt" onclick="selectType(this,'ข้าราชการ')">
+            <input type="radio" name="emptype" value="ข้าราชการ"> ข้าราชการ
+          </div>
+          <div class="radio-opt" onclick="selectType(this,'พนักงานราชการ')">
+            <input type="radio" name="emptype" value="พนักงานราชการ"> พนักงานราชการ
+          </div>
+          <div class="radio-opt" onclick="selectType(this,'ลูกจ้างประจำ')">
+            <input type="radio" name="emptype" value="ลูกจ้างประจำ"> ลูกจ้างประจำ
+          </div>
+          <div class="radio-opt" onclick="selectType(this,'อื่นๆ')">
+            <input type="radio" name="emptype" value="อื่นๆ"> อื่นๆ
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-grid" style="margin-bottom:16px">
+      <div class="form-col">
+        <label>ตำแหน่ง <span class="req">*</span></label>
+        <input type="text" id="position" placeholder="เช่น นักวิชาการคอมพิวเตอร์">
+      </div>
+      <div class="form-col">
+        <label>หมายเลขโทรศัพท์ <span class="req">*</span></label>
+        <input type="tel" id="phone" placeholder="02-xxx-xxxx หรือ 08x-xxx-xxxx">
+      </div>
+    </div>
+    <div class="form-grid single">
+      <div class="form-col">
+        <label>E-mail สำหรับแจ้งผลการดำเนินการ <span class="req">*</span></label>
+        <input type="email" id="notifyEmail" placeholder="อีเมลที่ติดต่อได้ (ไม่ใช่ @dsd.mail.go.th)">
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="section" id="step2">
+    <div class="section-title">ส่วนที่ ๒ — ข้อมูลหน่วยงาน</div>
+    <div class="form-grid" style="margin-bottom:16px">
+      <div class="form-col">
+        <label>หน่วยงาน (งาน/ฝ่าย/กลุ่ม) ภาษาไทย <span class="req">*</span></label>
+        <input type="text" id="unitTH" placeholder="เช่น ฝ่ายบริหารและพัฒนาข้อมูลฯ">
+      </div>
+      <div class="form-col">
+        <label>Unit / Section (English) <span class="req">*</span></label>
+        <input type="text" id="unitEN" placeholder="e.g. information technology planning">
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-col">
+        <label>สังกัด (กอง/สำนัก) ภาษาไทย <span class="req">*</span></label>
+        <input type="text" id="divTH" placeholder="เช่น ศูนย์เทคโนโลยีสารสนเทศและการสื่อสาร">
+      </div>
+      <div class="form-col">
+        <label>Bureau / Division (English) <span class="req">*</span></label>
+        <input type="text" id="divEN" placeholder="e.g. information technology centre">
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="section" id="step3">
+    <div class="section-title">ส่วนที่ ๓ — ประเภทการขอใช้บริการ</div>
+    <div class="service-grid">
+
+      <!-- Personal -->
+      <div class="service-card">
+        <div class="service-card-header">
+          <input type="checkbox" id="chkPersonal" onchange="toggleCard('personal',this)"> e-mail ส่วนบุคคล
+        </div>
+        <div class="service-card-body" id="cardPersonal" style="opacity:.5;pointer-events:none">
+          <div class="service-item" id="si_newP" onclick="toggleService('newP')">
+            <input type="checkbox" id="newP"><label for="newP">ขอมี e-mail ใหม่</label>
+          </div>
+          <div class="service-sub" id="sub_newP">
+            <div class="sub-label">ชื่อ e-mail ที่ต้องการ</div>
+            <div class="email-input-row">
+              <input type="text" id="val_newP" placeholder="firstname.xx">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+          </div>
+
+          <div class="service-item" id="si_keepP" onclick="toggleService('keepP')">
+            <input type="checkbox" id="keepP"><label for="keepP">ขอยืนยันใช้ e-mail เดิม</label>
+          </div>
+          <div class="service-sub" id="sub_keepP">
+            <div class="sub-label">ชื่อ e-mail เดิม</div>
+            <div class="email-input-row">
+              <input type="text" id="val_keepP" placeholder="firstname.xx">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+          </div>
+
+          <div class="service-item" id="si_cancelP" onclick="toggleService('cancelP')">
+            <input type="checkbox" id="cancelP"><label for="cancelP">ขอยกเลิก e-mail เดิม</label>
+          </div>
+          <div class="service-sub" id="sub_cancelP">
+            <div class="sub-label">ชื่อ e-mail ที่ต้องการยกเลิก</div>
+            <div class="email-input-row">
+              <input type="text" id="val_cancelP" placeholder="firstname.xx">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+            <p class="warn-text">⚠ ระบบจะยกเลิกภายใน 7 วัน — กรุณาโอนข้อมูลด้วยตนเอง</p>
+          </div>
+
+          <div class="service-item" id="si_resetP" onclick="toggleService('resetP')">
+            <input type="checkbox" id="resetP"><label for="resetP">ขอรหัสผ่านใหม่</label>
+          </div>
+          <div class="service-sub" id="sub_resetP">
+            <div class="sub-label">ชื่อ e-mail ที่ต้องการ Reset</div>
+            <div class="email-input-row">
+              <input type="text" id="val_resetP" placeholder="firstname.xx">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+            <div class="sub-label" style="margin-top:8px">เหตุผล</div>
+            <textarea id="reason_resetP" rows="2" placeholder="ระบุเหตุผล..." style="width:100%"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unit -->
+      <div class="service-card">
+        <div class="service-card-header">
+          <input type="checkbox" id="chkUnit" onchange="toggleCard('unit',this)"> e-mail หน่วยงาน
+        </div>
+        <div class="service-card-body" id="cardUnit" style="opacity:.5;pointer-events:none">
+          <div class="service-item" id="si_newU" onclick="toggleService('newU')">
+            <input type="checkbox" id="newU"><label for="newU">ขอมี e-mail หน่วยงานใหม่</label>
+          </div>
+          <div class="service-sub" id="sub_newU">
+            <div class="sub-label">ชื่อ e-mail หน่วยงานที่ต้องการ</div>
+            <div class="email-input-row">
+              <input type="text" id="val_newU" placeholder="unit.division">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+          </div>
+
+          <div class="service-item" id="si_keepU" onclick="toggleService('keepU')">
+            <input type="checkbox" id="keepU"><label for="keepU">ขอยืนยันใช้ e-mail หน่วยงานเดิม</label>
+          </div>
+          <div class="service-sub" id="sub_keepU">
+            <div class="email-input-row">
+              <input type="text" id="val_keepU" placeholder="unit.division">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+          </div>
+
+          <div class="service-item" id="si_cancelU" onclick="toggleService('cancelU')">
+            <input type="checkbox" id="cancelU"><label for="cancelU">ขอยกเลิก e-mail หน่วยงานเดิม</label>
+          </div>
+          <div class="service-sub" id="sub_cancelU">
+            <div class="email-input-row">
+              <input type="text" id="val_cancelU" placeholder="unit.division">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+            <p class="warn-text">⚠ ระบบจะยกเลิกภายใน 7 วัน — กรุณาโอนข้อมูลด้วยตนเอง</p>
+          </div>
+
+          <div class="service-item" id="si_changeU" onclick="toggleService('changeU')">
+            <input type="checkbox" id="changeU"><label for="changeU">ขอเปลี่ยนแปลงผู้รับผิดชอบ</label>
+          </div>
+          <div class="service-sub" id="sub_changeU">
+            <div class="sub-label">ชื่อ e-mail หน่วยงาน</div>
+            <div class="email-input-row">
+              <input type="text" id="val_changeU" placeholder="unit.division">
+              <span class="email-suffix">@dsd.mail.go.th</span>
+            </div>
+            <div class="sub-label" style="margin-top:8px">ชื่อผู้รับผิดชอบใหม่</div>
+            <input type="text" id="newOwner" placeholder="ชื่อ-นามสกุล ผู้รับผิดชอบคนใหม่">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="section" id="step4">
+    <div class="section-title">ส่วนที่ ๔ — ข้อตกลงการใช้งาน</div>
+    <div class="consent-box">
+      <strong>ข้อตกลงการใช้งานระบบจดหมายอิเล็กทรอนิกส์ workD Mail</strong><br><br>
+      ๑. ผู้ใช้ควรเปลี่ยนรหัสผ่านทันทีเมื่อสามารถเข้าใช้งานได้ และ Logout ทุกครั้งเมื่อเลิกใช้งาน<br><br>
+      ๒. ผู้ใช้มีหน้าที่รับผิดชอบ Username และ Password ของตนเอง ห้ามให้ผู้อื่นเข้าถึง<br><br>
+      ๓. บัญชีนี้มีไว้เพื่อใช้งานตามภารกิจราชการของกรมพัฒนาฝีมือแรงงานเท่านั้น ห้ามใช้เพื่อการพาณิชย์หรือประกอบธุรกิจส่วนตัว<br><br>
+      ๔. ห้ามส่ง ปลอมแปลง เผยแพร่ข้อความ ภาพ เสียง หรือวิดีโอที่ลามกอนาจาร หรือที่เป็นการละเมิดลิขสิทธิ์<br><br>
+      ๕. ห้ามส่งจดหมายลูกโซ่ spam mail กระจายไวรัส หรือโปรแกรมใดที่กระทบต่อความมั่นคงของชาติ<br><br>
+      ๖. ผู้ใช้ยินยอมปฏิบัติตาม พ.ร.บ. ว่าด้วยการกระทำความผิดเกี่ยวกับคอมพิวเตอร์ พ.ศ. ๒๕๕๐ ทุกประการ
+    </div>
+    <label class="consent-check">
+      <input type="checkbox" id="consentCheck">
+      <span>ข้าพเจ้าได้อ่านและยอมรับข้อตกลงการใช้งานทุกข้อแล้ว</span>
+    </label>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="section" id="step5">
+    <div class="section-title">ส่วนที่ ๕ — สรุปคำขอก่อนส่ง</div>
+    <div id="summaryBox" style="background:var(--blue-pale);border:1.5px solid var(--border);border-radius:8px;padding:20px;font-size:15px;line-height:2"></div>
+    <div style="background:#FFF8E1;border:1.5px solid #F0A500;border-radius:8px;padding:16px;margin-top:16px;font-size:14px;color:#5A3E00">
+      <strong>⚠ หมายเหตุ :</strong> หลังส่งแบบฟอร์ม กรุณาแนบ <strong>สำเนาบัตรประชาชน (รับรองสำเนาถูกต้อง)</strong>
+      ส่งมาที่ ศทส. ทาง <strong>e-mail : itc@dsd.go.th</strong> หรือที่กลุ่ม <strong>Line OpenChat</strong>
+    </div>
+  </div>
+
+  <!-- Error box -->
+  <div id="errorBox" style="display:none;margin:0 36px;padding:14px 18px;background:#FFF0F0;border:1.5px solid #C00000;border-radius:8px;color:#C00000;font-size:14px"></div>
+
+  <!-- Success -->
+  <div class="success-page" id="successPage">
+    <div class="success-icon">✅</div>
+    <h2>ส่งคำขอเรียบร้อยแล้ว!</h2>
+    <p style="margin-top:8px">เจ้าหน้าที่ ศทส. จะติดต่อกลับภายใน <strong>1 วันทำการ</strong><br>ทาง e-mail ที่ท่านแจ้งไว้</p>
+    <p style="margin-top:16px;color:var(--red)">อย่าลืมส่งสำเนาบัตรประชาชนมาด้วยนะครับ 📎</p>
+    <div id="demoNote" style="display:none;margin-top:14px;padding:10px 16px;background:#FFF8E1;border:1.5px solid #F0A500;border-radius:8px;font-size:13px;color:#5A3E00;max-width:420px;margin-left:auto;margin-right:auto">
+      ⚙️ <strong>Demo mode</strong> — ยังไม่ได้ตั้งค่า Apps Script URL<br>ดูวิธีตั้งค่าได้ในไฟล์ <code>workd_mail_backend.gs</code>
+    </div>
+    <button class="btn btn-next" style="margin-top:24px" onclick="resetForm()">ส่งคำขอใหม่</button>
+  </div>
+
+  <div class="nav-row" id="navRow">
+    <button class="btn btn-back" id="btnBack" onclick="goBack()" style="visibility:hidden">← ย้อนกลับ</button>
+    <span id="stepIndicator" style="color:var(--gray);font-size:14px">ขั้นตอน 1 จาก 5</span>
+    <button class="btn btn-next" id="btnNext" onclick="goNext()">ถัดไป →</button>
+  </div>
+</div>
+
+<script>
+let current = 1;
+const TOTAL = 5;
+
+function goNext() {
+  if (!validate(current)) return;
+  if (current === TOTAL) { submitForm(); return; }
+  if (current === TOTAL - 1) buildSummary();
+  setStep(current + 1);
+}
+function goBack() { setStep(current - 1); }
+
+function setStep(n) {
+  document.querySelector('.section.active').classList.remove('active');
+  document.getElementById('step'+n).classList.add('active');
+  document.querySelectorAll('.step').forEach((s,i) => {
+    s.classList.remove('active','done');
+    if (i+1 < n) s.classList.add('done');
+    if (i+1 === n) s.classList.add('active');
+  });
+  current = n;
+  document.getElementById('btnBack').style.visibility = n > 1 ? 'visible' : 'hidden';
+  document.getElementById('btnNext').textContent = n === TOTAL ? '✔ ส่งคำขอ' : 'ถัดไป →';
+  document.getElementById('btnNext').className = 'btn ' + (n === TOTAL ? 'btn-submit' : 'btn-next');
+  document.getElementById('stepIndicator').textContent = `ขั้นตอน ${n} จาก ${TOTAL}`;
+}
+
+function selectType(el, val) {
+  document.querySelectorAll('.radio-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function toggleCard(type, chk) {
+  const card = document.getElementById('card'+(type==='personal'?'Personal':'Unit'));
+  card.style.opacity = chk.checked ? '1' : '0.5';
+  card.style.pointerEvents = chk.checked ? 'auto' : 'none';
+}
+
+function toggleService(id) {
+  const cb = document.getElementById(id);
+  cb.checked = !cb.checked;
+  document.getElementById('si_'+id).classList.toggle('selected', cb.checked);
+  const sub = document.getElementById('sub_'+id);
+  if (sub) sub.classList.toggle('show', cb.checked);
+}
+
+function validate(step) {
+  let ok = true;
+  const req = (id) => {
+    const el = document.getElementById(id);
+    if (!el || !el.value.trim()) { if(el) el.classList.add('error'); ok = false; }
+    else el.classList.remove('error');
+  };
+  if (step === 1) { ['nameTH','nameEN','idcard','position','phone','notifyEmail'].forEach(req); }
+  if (step === 2) { ['unitTH','unitEN','divTH','divEN'].forEach(req); }
+  if (step === 3) {
+    if (!document.getElementById('chkPersonal').checked && !document.getElementById('chkUnit').checked) {
+      alert('กรุณาเลือกประเภทบริการอย่างน้อย 1 รายการ'); ok = false;
+    }
+  }
+  if (step === 4 && !document.getElementById('consentCheck').checked) {
+    alert('กรุณายอมรับข้อตกลงการใช้งานก่อน'); ok = false;
+  }
+  return ok;
+}
+
+function buildSummary() {
+  const v = id => (document.getElementById(id)||{value:''}).value || '-';
+  const type = document.querySelector('input[name="emptype"]:checked');
+  const services = [];
+  ['newP','keepP','cancelP','resetP'].forEach(id => { if(document.getElementById(id)?.checked) services.push(document.getElementById(id).nextElementSibling.textContent + ' (' + v('val_'+id) + '@dsd.mail.go.th)'); });
+  ['newU','keepU','cancelU','changeU'].forEach(id => { if(document.getElementById(id)?.checked) services.push(document.getElementById(id).nextElementSibling.textContent + ' (' + v('val_'+id) + '@dsd.mail.go.th)'); });
+  document.getElementById('summaryBox').innerHTML = `
+    <b>ชื่อ-สกุล :</b> ${v('nameTH')} / ${v('nameEN')}<br>
+    <b>เลขบัตร :</b> ${v('idcard')} &nbsp;|&nbsp; <b>ประเภท :</b> ${type ? type.value : '-'}<br>
+    <b>ตำแหน่ง :</b> ${v('position')} &nbsp;|&nbsp; <b>โทร :</b> ${v('phone')}<br>
+    <b>E-mail แจ้งผล :</b> ${v('notifyEmail')}<br>
+    <b>หน่วยงาน :</b> ${v('unitTH')} (${v('unitEN')})<br>
+    <b>สังกัด :</b> ${v('divTH')} (${v('divEN')})<br>
+    <b>บริการที่ขอ :</b><br>${services.length ? services.map(s=>'&nbsp;&nbsp;• '+s).join('<br>') : '&nbsp;&nbsp;-'}
+  `;
+}
+
+// ===== ตั้งค่าตรงนี้ =====
+const LIFF_ID = '2011642367-YRLfN0A3'; // LINE MINI App — Developing
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+// =========================
+let lineProfile = null;
+
+async function initLiff() {
+  try {
+    if (typeof liff === 'undefined') throw new Error('no liff');
+    await liff.init({ liffId: LIFF_ID });
+    if (!liff.isLoggedIn()) { liff.login({ redirectUri: location.href }); return; }
+    lineProfile = await liff.getProfile();
+    document.getElementById('liffAvatar').src = lineProfile.pictureUrl || '';
+    document.getElementById('liffName').textContent = lineProfile.displayName || '';
+    document.getElementById('liffBanner').style.display = 'flex';
+    const n = document.getElementById('nameTH');
+    if (n && !n.value) n.placeholder = lineProfile.displayName || '';
+  } catch(e) { console.warn('LIFF:', e.message); }
+  finally { document.getElementById('liffLoading').style.display = 'none'; }
+}
+
+function collectData() {
+  const v = id => (document.getElementById(id)||{value:''}).value.trim() || '';
+  const type = document.querySelector('input[name="emptype"]:checked');
+  const services = [];
+  ['newP','keepP','cancelP','resetP'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb && cb.checked) {
+      services.push({
+        type: cb.nextElementSibling.textContent.trim(),
+        email: v('val_'+id) + '@dsd.mail.go.th',
+        reason: v('reason_'+id) || '',
+      });
+    }
+  });
+  ['newU','keepU','cancelU','changeU'].forEach(id => {
+    const cb = document.getElementById(id);
+    if (cb && cb.checked) {
+      services.push({
+        type: cb.nextElementSibling.textContent.trim(),
+        email: v('val_'+id) + '@dsd.mail.go.th',
+        newOwner: v('newOwner') || '',
+      });
+    }
+  });
+  return {
+    timestamp: new Date().toLocaleString('th-TH', {timeZone:'Asia/Bangkok'}),
+    lineUserId: lineProfile ? lineProfile.userId : '',
+    lineDisplayName: lineProfile ? lineProfile.displayName : '',
+    nameTH: v('nameTH'), nameEN: v('nameEN'),
+    idcard: v('idcard'),
+    empType: type ? type.value : '',
+    position: v('position'), phone: v('phone'),
+    notifyEmail: v('notifyEmail'),
+    unitTH: v('unitTH'), unitEN: v('unitEN'),
+    divTH: v('divTH'), divEN: v('divEN'),
+    services: JSON.stringify(services),
+    servicesText: services.map(s => s.type + ' — ' + s.email).join('\n'),
+  };
+}
+
+async function submitForm() {
+  const btn = document.getElementById('btnNext');
+  btn.disabled = true;
+  btn.textContent = '⏳ กำลังส่ง...';
+
+  const data = collectData();
+
+  // Check if URL is configured
+  if (APPS_SCRIPT_URL.includes('YOUR_DEPLOYMENT_ID')) {
+    // Demo mode — just show success without real API call
+    showSuccess(true, null);
+    return;
+  }
+
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    const result = await resp.json();
+    if (result.status === 'ok') {
+      showSuccess(false, result.rowNum);
+    } else {
+      throw new Error(result.message || 'error');
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = '✔ ส่งคำขอ';
+    showError(err.message);
+  }
+}
+
+function showSuccess(demo, reqId) {
+  document.getElementById('step5').classList.remove('active');
+  document.getElementById('navRow').style.display = 'none';
+  if (demo) document.getElementById('demoNote').style.display = 'block';
+  document.getElementById('successPage').style.display = 'block';
+  if (typeof liff !== 'undefined' && liff.isInClient && liff.isInClient()) {
+    setTimeout(async () => {
+      const msg = String.fromCharCode(9989) + ' ส่งคำขอ workD Mail เรียบร้อยแล้ว'
+        + (reqId ? '\nเลขที่คำขอ: ' + reqId : '')
+        + '\n\nเจ้าหน้าที่ ศทส. จะแจ้งผลภายใน 1 วันทำการ'
+        + '\n' + String.fromCharCode(128206) + ' อย่าลืมส่งสำเนาบัตรประชาชนมาด้วยนะครับ';
+      try { await liff.sendMessages([{ type: 'text', text: msg }]); } catch(e) {}
+      liff.closeWindow();
+    }, 2500);
+  }
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.style.display = 'block';
+  box.textContent = '❌ เกิดข้อผิดพลาด: ' + msg + ' — กรุณาลองใหม่หรือติดต่อ ศทส. โดยตรง';
+}
+
+function resetForm() {
+  location.reload();
+}
+
+initLiff();
+</script>
+</body>
+</html>
